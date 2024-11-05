@@ -1,0 +1,77 @@
+###########################################
+############ CREATE API ###################
+
+### CUSTOMER CREATE API
+POST http://localhost:9200/customers/_create/contoh
+Content-Type: application/json
+
+{
+    "name": "Abang Kuy",
+    "register_at": "2024-10-23 17:00:23"
+}
+
+
+### GET Customers mapping
+GET http://localhost:9200/customers/_mapping
+
+### Create products 1
+POST http://localhost:9200/products/_create/1
+Content-Type: application/json
+
+{
+    "name": "Indomie Ayam Bawang",
+    "price": "2000"
+}
+
+### Create products 1
+POST http://localhost:9200/products/_create/2
+Content-Type: application/json
+
+{
+    "name": "Mie Sedap Soto",
+    "price": 3000
+}
+
+### Products Mapping
+GET http://localhost:9200/products/_mapping
+
+### Orders Mapping
+GET http://localhost:9200/orders/_mapping
+
+### Create orders 1
+POST http://localhost:9200/orders/_create/1
+Content-Type: application/json
+
+{
+    "order_date": "2024-10-12 00:00:00",
+    "customer_id": "contoh",
+    "total": 8000,
+    "items":[
+        {
+            "product_id": "1",
+            "price": "2000",
+            "quantity": "2"
+        },
+        {
+            "product_id": "2",
+            "price": "3000",
+            "quantity": "2"
+        }
+    ]
+}
+
+### CUSTOMER GET API
+GET http://localhost:9200/customers/_doc/contoh
+
+### CUSTOMER GET - SOURCE API
+GET http://localhost:9200/customers/_source/contoh
+
+### CUSTOMER GET API NOT FOUND
+GET http://localhost:9200/customers/_doc/slah
+
+
+### CUSTOMER GET - CHECK IF EXIST
+HEAD http://localhost:9200/customers/_doc/contoh
+
+### CUSTOMER GET - CHECK IF EXIST (NOT EXIST)
+HEAD http://localhost:9200/customers/_doc/salah
