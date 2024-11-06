@@ -60,6 +60,9 @@ Content-Type: application/json
     ]
 }
 
+###########################################
+############ GET API ###################
+
 ### CUSTOMER GET API
 GET http://localhost:9200/customers/_doc/contoh
 
@@ -75,3 +78,36 @@ HEAD http://localhost:9200/customers/_doc/contoh
 
 ### CUSTOMER GET - CHECK IF EXIST (NOT EXIST)
 HEAD http://localhost:9200/customers/_doc/salah
+
+###########################################
+############ MULTI GET API ###################
+
+### get product 1 and 2
+
+GET http://localhost:9200/products/_mget
+Content-Type: application/json
+
+{
+    "ids":[
+        "1","2"
+    ]
+}
+
+### get order 1 and customer contoh
+
+GET http://localhost:9200/_mget
+Content-Type: application/json
+
+{
+    "docs": [
+        {
+            "_id": "1",
+            "_index":"orders"
+        },
+        {
+            "_id":"contoh",
+            "_index": "customers"
+        }
+    ]
+    
+}
