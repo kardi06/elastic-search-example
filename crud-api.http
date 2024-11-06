@@ -111,3 +111,22 @@ Content-Type: application/json
     ]
     
 }
+
+###########################################
+############ SEARCH API ###################
+
+### Search all product
+POST http://localhost:9200/products/_search
+
+
+### search all product page 1
+POST http://localhost:9200/products/_search?size=1&from=0
+
+### search all product page 2
+POST http://localhost:9200/products/_search?size=1&from=1
+
+### search all product sort by price
+POST http://localhost:9200/products/_search?sort=price:asc
+
+### search all product sort by price
+POST http://localhost:9200/products/_search?sort=name:desc
