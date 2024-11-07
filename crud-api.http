@@ -261,3 +261,112 @@ GET http://localhost:9200/_aliases
 
 ### search customer menggunakan alias
 GET http://localhost:9200/customer/_search
+
+###########################################
+############ REINDEX ###################
+
+### create new index orders
+PUT http://localhost:9200/orders_v2
+
+### mapping
+PUT http://localhost:9200/orders_v2/_mapping
+Content-Type: application/json
+
+{
+    "numeric_detection": true,
+    "date_detection": true,
+    "dynamic_date_formats": [
+        "yyyy-MM-dd HH:mm:ss",
+        "yyyy-MM-dd",
+        "yyyy/MM/dd HH:mm:ss",
+        "yyyy/MM/dd"
+    ]
+
+}
+
+### reindex orders data
+POST http://localhost:9200/_reindex
+Content-Type: application/json
+
+{
+    "source": {
+        "index": "orders"
+    },
+    "dest": {
+        "index": "orders_v2"
+    }
+}
+
+### get order data from orders_v2
+GET http://localhost:9200/orders_v2/_search
+
+### switch alias order from orders to orders_v2
+### remove alias from orders
+POST http://localhost:9200/_aliases
+Content-Type: application/json
+
+{
+    "actions": [
+        {
+            "remove": {
+                "index": "orders",
+                "alias": "order"
+            }
+        }
+    ]
+}
+
+### add alias to orders_v2
+POST http://localhost:9200/_aliases
+Content-Type: application/json
+
+{
+    "actions": [
+        {
+            "add": {
+                "index": "orders_v2",
+                "alias": "order"
+            }
+        }
+    ]
+}
+
+### lebih simple langsung disatuin aja
+POST http://localhost:9200/_aliases
+Content-Type: application/json
+
+{
+    "actions": [
+        {
+            "remove": {
+                "index": "orders",
+                "alias": "order"
+            }
+        },
+        {
+            "add": {
+                "index": "orders_v2",
+                "alias": "order"
+            }
+        }
+    ]
+}
+
+### check alias
+GET http://localhost:9200/_aliases
+
+### search order alias
+GET http://localhost:9200/order/_search
+
+
+###########################################
+############ SOURCE include ###################
+
+## select total, customer_id, items.product_d from order
+GET http://localhost:9200/order/_search?_source_includes=total,customer_id,items.product_id
+
+### select *, exclude price from products
+GET http://localhost:9200/products/_search?_source_excludes=price
+
+### select total, customer_id from order where _id = 1
+GET http://localhost:9200/order/_doc/1?_source_includes=total,customer_id
