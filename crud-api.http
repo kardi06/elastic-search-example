@@ -130,3 +130,134 @@ POST http://localhost:9200/products/_search?sort=price:asc
 
 ### search all product sort by price
 POST http://localhost:9200/products/_search?sort=name:desc
+
+
+###########################################
+############ INDEX API ###################
+
+### create product 3
+POST http://localhost:9200/products/_doc/3
+Content-Type: application/json
+
+{
+  "name" : "Pop Mie Rasa Bakso",
+  "price": 2500
+}
+
+### create product 4
+POST http://localhost:9200/products/_doc/4
+Content-Type: application/json
+
+{
+  "name" : "Samsung Galaxy S9+",
+  "price": 10000000
+}
+
+### create product 5
+POST http://localhost:9200/products/_doc/5
+Content-Type: application/json
+
+{
+  "name" : "Acer Predator XXI",
+  "price": 25000000
+}
+
+### get product 5
+GET http://localhost:9200/products/_doc/5
+
+### search all products
+POST http://localhost:9200/products/_search
+
+###########################################
+############ UPDATE API ###################
+
+### update price for product 5
+POST http://localhost:9200/products/_update/5
+Content-Type: application/json
+
+{
+  "doc" : {
+    "price": 30000000
+  }
+}
+
+###########################################
+############ DELETE API ###################
+
+### insert customer spammer
+POST http://localhost:9200/customers/_create/spammer
+Content-Type: application/json
+
+{
+  "name" : "spammer",
+  "register_at" : "2023-10-10 00:00:00"
+}
+
+### delete customer spammer
+DELETE http://localhost:9200/customers/_doc/spammer
+
+###########################################
+############ BULK API ###################
+
+
+### bulk api
+POST http://localhost:9200/_bulk
+Content-Type: application/json
+
+# {"create" :  {"_index" :  "customers", "_id":  "joko"}}
+# {"name" :  "Joko Morro", "register_at": "2023-10-10 00:00:00"}
+# {"index" :  {"_index" :  "customers", "_id":  "budi"}}
+# {"name" :  "Budi Nugraha", "register_at": "2023-10-10 00:00:00"}
+# {"update" :  {"_index" :  "products", "_id":  "1"}}
+# {"doc" :  {"price" :  2500}}
+# {"create" :  {"_index" :  "customers", "_id":  "spammer"}}
+# {"name" :  "Spammer", "register_at": "2023-10-10 00:00:00"}
+# {"delete" :  {"_index" :  "customers", "_id":  "spammer"}}
+< bulk.json
+
+
+###########################################
+############ ALIAS ###################
+
+### single, customer alias
+POST http://localhost:9200/_aliases
+Content-Type: application/json
+
+{
+    "actions": [
+        {
+            "add": {
+                "index": "customers",
+                "alias": "customer"
+            }
+        }
+    ]
+}
+
+### banyak, customer, order alias
+POST http://localhost:9200/_aliases
+Content-Type: application/json
+
+{
+    "actions": [
+        {
+            "add": {
+                "index": "customers",
+                "alias": "customer"
+            }
+            
+        },
+        {
+            "add": {
+                "alias":"order",
+                "index": "orders"
+            }
+        }
+    ]
+}
+
+### get alias
+GET http://localhost:9200/_aliases
+
+### search customer menggunakan alias
+GET http://localhost:9200/customer/_search
