@@ -376,3 +376,94 @@ Content-Type: application/json
     }
   ]
 }
+
+### search customer where hobbies != 'gaming' AND banks.name != 'bca digital'
+POST http://localhost:9200/customer/_search
+Content-Type: application/json
+
+{
+  "query": {
+    "bool": {
+      "must_not": [
+        {
+          "term": {
+            "hobbies": "gaming"
+          }
+        },
+        {
+          "match": {
+            "banks.name": {
+              "query": "bca digital"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+
+
+### search customer where hobbies = 'GAMING' AND (banks.name = 'bca' OR 'banks.name = 'bni)
+POST http://localhost:9200/customer/_search
+Content-Type: application/json
+
+{
+  "query": {
+    "bool": {
+      "must" : [
+        {
+          "term" : {
+            "hobbies" : "gaming"
+          }
+        }
+      ],
+      "should": [
+        {
+          "term": {
+            "banks.name": "bca"
+          }
+        },
+        {
+          "term": {
+            "banks.name": "bni"
+          }
+        }
+      ],
+      "minimum_should_match" : 1
+    }
+  }
+}
+
+### explain score for customer username126
+POST http://localhost:9200/customer/_explain/username126
+Content-Type: application/json
+
+{
+  "query": {
+    "bool": {
+      "must" : [
+        {
+          "term" : {
+            "hobbies" : {
+              "value" : "gaming",
+              "boost" : 0
+            }
+          }
+        }
+      ],
+      "should": [
+        {
+          "term": {
+            "banks.name": "bca"
+          }
+        },
+        {
+          "term": {
+            "banks.name": "bni"
+          }
+        }
+      ],
+      "minimum_should_match" : 1
+    }
+  }
+}
