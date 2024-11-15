@@ -106,3 +106,257 @@ Content-Type: application/json
 {
     "numeric_detection": true
 }
+
+
+### create index parents
+PUT http://localhost:9200/parents
+
+### update parents mapping
+PUT http://localhost:9200/parents/_mapping
+Content-Type: application/json
+
+{
+  "properties": {
+    "first_name": {
+      "type": "text"
+    },
+    "last_name": {
+      "type": "text"
+    },
+    "children": {
+      "properties": {
+        "first_name": {
+          "type": "text"
+        },
+        "last_name": {
+          "type": "text"
+        }
+      }
+    }
+  }
+}
+
+### get parents mapping
+GET http://localhost:9200/parents/_mapping
+
+### insert parent eko
+POST http://localhost:9200/parents/_doc/1
+Content-Type: application/json
+
+{
+  "first_name" : "Eko",
+  "last_name" : "Khannedy",
+  "children" : [
+    {
+      "first_name" : "Joko",
+      "last_name" : "Morro"
+    },
+    {
+      "first_name" : "Budi",
+      "last_name" : "Nugraha"
+    }
+  ]
+}
+
+### get parent
+GET http://localhost:9200/parents/_doc/1
+
+
+### search children
+POST http://localhost:9200/parents/_search
+Content-Type: application/json
+
+{
+  "query" : {
+    "bool" : {
+      "must": [
+        {
+          "match": {
+            "children.first_name" : "Joko"
+          }
+        },
+        {
+          "match": {
+            "children.last_name" : "Nugraha"
+          }
+        }
+      ]
+    }
+  }
+}
+
+### delete parents index
+DELETE http://localhost:9200/parents
+
+### create index parents
+PUT http://localhost:9200/parents
+
+### update parents mapping
+PUT http://localhost:9200/parents/_mapping
+Content-Type: application/json
+
+{
+  "properties": {
+    "first_name": {
+      "type": "text"
+    },
+    "last_name": {
+      "type": "text"
+    },
+    "children": {
+      "type": "nested",
+      "properties": {
+        "first_name": {
+          "type": "text"
+        },
+        "last_name": {
+          "type": "text"
+        }
+      }
+    }
+  }
+}
+
+
+### get parents mapping
+GET http://localhost:9200/parents/_mapping
+
+### insert parent eko
+POST http://localhost:9200/parents/_doc/1
+Content-Type: application/json
+
+{
+  "first_name" : "Eko",
+  "last_name" : "Khannedy",
+  "children" : [
+    {
+      "first_name" : "Joko",
+      "last_name" : "Morro"
+    },
+    {
+      "first_name" : "Budi",
+      "last_name" : "Nugraha"
+    }
+  ]
+}
+
+### search children
+POST http://localhost:9200/parents/_search
+Content-Type: application/json
+
+{
+  "query": {
+    "nested": {
+      "path": "children",
+      "query": {
+        "bool": {
+          "must": [
+            {
+              "match": {
+                "children.first_name": "Budi"
+              }
+            },
+            {
+              "match": {
+                "children.last_name": "Nugraha"
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}
+
+
+### create index category
+PUT http://localhost:9200/categories
+
+### update category mapping
+PUT http://localhost:9200/categories/_mapping
+Content-Type: application/json
+
+{
+  "properties" : {
+    "name": {
+      "type": "text",
+      "fields": {
+        "raw" : {
+          "type": "keyword"
+        }
+      }
+    }
+  }
+}
+
+
+### get categories mapping
+GET http://localhost:9200/categories/_mapping
+
+### inser categories
+POST http://localhost:9200/categories/_doc/1
+Content-Type: application/json
+
+{
+  "name" : "Laptop Murah"
+}
+
+### search categories
+POST http://localhost:9200/categories/_search
+Content-Type: application/json
+
+{
+  "query": {
+    "match" : {
+      "name" : "laptop"
+    }
+  },
+  "sort": [
+    {
+      "name.raw" : {
+        "order": "asc"
+      }
+    }
+  ]
+}
+
+### update products mapping
+PUT http://localhost:9200/products/_mapping
+Content-Type: application/json
+
+{
+  "properties": {
+    "name": {
+      "type": "text",
+      "fields" : {
+        "raw": {
+          "type": "keyword"
+        }
+      }
+    }
+  }
+}
+### get products mapping
+GET http://localhost:9200/products/_mapping
+
+### searching products
+POST http://localhost:9200/products/_search
+Content-Type: application/json
+
+{
+  "query": {
+    "match": {
+      "name.raw": "Mie Sedap Soto"
+    }
+  }
+}
+
+### Update By Query 
+POST http://localhost:9200/products/_update_by_query
+Content-Type: application/json
+
+{
+  "query": {
+    "match_all": {}
+  }
+}
