@@ -464,3 +464,16 @@ Content-Type: application/json
     "10087"
   ]
 }
+
+
+### Cat API
+GET http://localhost:9200/_cat
+
+### Cat API - Indices
+GET http://localhost:9200/_cat/indices?v
+
+### Cat API - Aliases
+GET http://localhost:9200/_cat/aliases?v
+
+### Cat API - Nodes
+GET http://localhost:9200/_cat/nodes?v
